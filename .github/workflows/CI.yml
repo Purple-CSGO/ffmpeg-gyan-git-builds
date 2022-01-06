@@ -53,14 +53,20 @@ jobs:
 #           files: temp/
 #           gzip: false
       
-      - name: Create Release With Asset
-        id: Release-AIO
-        uses: Hs1r1us/Release-AIO@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 上传文件
+#       - name: upload artifacts
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ffmpeg-builds
+#           path: temp
+
+      # 发布release
+      - name: release
+        uses: softprops/action-gh-release@v1
+        if: env.CURRENT_VERSION != env.TARGET_VERSION
         with:
-          tag_name: ${{ env.TARGET_VERSION }}
-          asset_files: './temp/'
-          release_name: FFMPEG Builds ${{ env.TARGET_VERSION }}
-          body: All files are from https://www.gyan.dev/ffmpeg/
+          files: "temp/**" # 根据打包后的目录修改
+          draft: true # 为发布前检查，设置true发布为草稿
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
