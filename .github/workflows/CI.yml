@@ -20,8 +20,8 @@ jobs:
       # 获取对比版本，下载文件
       - name: run
         run: |
-          currentVersion=`curl $CURRENT_VERSION_API`
-          targetVersion=`curl $TARGET_VERSION_API`
+          currentVersion=`curl $CURRENT_VERSION_API -q`
+          targetVersion=`curl $TARGET_VERSION_API -q`
 
           if [ $currentVersion != $targetVersion ]
           then
@@ -42,31 +42,12 @@ jobs:
           FILE_2: https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z
 
       # 发布release和上传文件
-#       - name: release
-#         if: env.CURRENT_VERSION != env.TARGET_VERSION
-#         uses: meeDamian/github-release@v2.0.3
-#         with:
-#           token:  ${{ secrets.GITHUB_TOKEN }}
-#           tag: ${{ env.TARGET_VERSION }}
-#           name: FFMPEG Builds ${{ env.TARGET_VERSION }}
-#           body: All files are from https://www.gyan.dev/ffmpeg/
-#           files: temp/
-#           gzip: false
-      
-      # 上传文件
-#       - name: upload artifacts
-#         uses: actions/upload-artifact@v2
-#         with:
-#           name: ffmpeg-builds
-#           path: temp
-
-      # 发布release
       - name: release
         uses: softprops/action-gh-release@v1
         if: env.CURRENT_VERSION != env.TARGET_VERSION
         with:
-          files: "temp/**" # 根据打包后的目录修改
+          files: "temp/**"
+          tag_name: ${{ env.TARGET_VERSION }}
+          name: FFMPEG Builds ${{ env.TARGET_VERSION }}
+          body: All files are from https://www.gyan.dev/ffmpeg/
           draft: true # 为发布前检查，设置true发布为草稿
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-
