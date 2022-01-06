@@ -27,9 +27,9 @@ jobs:
           then
             mkdir temp
             cd temp
-            echo "Downloading File_1..."
+            echo "Downloading File_1..." -q
             wget $FILE_1
-            echo "Downloading File_2..."
+            echo "Downloading File_2..." -q
             wget $FILE_2
             echo "CURRENT_VERSION=$currentVersion" >> $GITHUB_ENV
             echo "TARGET_VERSION=$targetVersion" >> $GITHUB_ENV
@@ -48,8 +48,8 @@ jobs:
         with:
           token:  ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.TARGET_VERSION }}
-          name: ${{ env.TARGET_VERSION }}
+          name: FFMPEG Builds ${{ env.TARGET_VERSION }}
           body: All files are from https://www.gyan.dev/ffmpeg/
           files: temp/
-          gzip: no
+          gzip: false
 
