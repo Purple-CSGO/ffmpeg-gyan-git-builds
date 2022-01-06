@@ -23,7 +23,7 @@ jobs:
           currentVersion=`curl $CURRENT_VERSION_API`
           targetVersion=`curl $TARGET_VERSION_API`
 
-          if $currentVersion != $targetVersion
+          if [ $currentVersion != $targetVersion ]
           then
             mkdir temp
             cd temp
@@ -34,8 +34,6 @@ jobs:
             echo "CURRENT_VERSION=$currentVersion" >> $GITHUB_ENV
             echo "TARGET_VERSION=$targetVersion" >> $GITHUB_ENV
             cd .
-          else
-            echo "RUN=0" >> $GITHUB_ENV
           fi
         env:
           CURRENT_VERSION_API: https://api.upup.cool/repos/Purple-CSGO/CSGO-Config-Presets/version
