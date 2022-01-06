@@ -31,8 +31,8 @@ jobs:
             wget $FILE_1
             echo "Downloading File_2..."
             wget $FILE_2
-            echo "CURRENT_VERSION={{ $currentVersion }}" >> $GITHUB_ENV
-            echo "TARGET_VERSION={{ $targetVersion }}" >> $GITHUB_ENV
+            echo "CURRENT_VERSION=$currentVersion" >> $GITHUB_ENV
+            echo "TARGET_VERSION=$targetVersion" >> $GITHUB_ENV
             cd .
           else
             echo "RUN=0" >> $GITHUB_ENV
