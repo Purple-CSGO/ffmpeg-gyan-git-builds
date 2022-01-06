@@ -20,8 +20,8 @@ jobs:
       # 获取对比版本，下载文件
       - name: run
         run: |
-          currentVersion = `curl $CURRENT_VERSION_API`
-          targetVersion  = `curl $TARGET_VERSION_API`
+          currentVersion=`curl $CURRENT_VERSION_API`
+          targetVersion=`curl $TARGET_VERSION_API`
 
           if $currentVersion != $targetVersion
           then
