@@ -6,7 +6,7 @@ on:
 
   # 定时激活
   schedule:
-    - cron:  '* 2 * * *'
+    - cron:  '0 5 * * *'
       # 每30分钟：'30 * * * *'
       # 每1小时：'* 1 * * *'
       # ！最少5分钟
@@ -27,10 +27,10 @@ jobs:
           then
             mkdir temp
             cd temp
-            echo "Downloading File_1..." -q
-            wget $FILE_1
-            echo "Downloading File_2..." -q
-            wget $FILE_2
+            echo "Downloading File_1..."
+            wget $FILE_1 -q
+            echo "Downloading File_2..."
+            wget $FILE_2 -q
             echo "CURRENT_VERSION=$currentVersion" >> $GITHUB_ENV
             echo "TARGET_VERSION=$targetVersion" >> $GITHUB_ENV
             cd .
@@ -42,14 +42,25 @@ jobs:
           FILE_2: https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z
 
       # 发布release和上传文件
-      - name: release
-        if: env.CURRENT_VERSION != env.TARGET_VERSION
-        uses: meeDamian/github-release@v2.0.3
+#       - name: release
+#         if: env.CURRENT_VERSION != env.TARGET_VERSION
+#         uses: meeDamian/github-release@v2.0.3
+#         with:
+#           token:  ${{ secrets.GITHUB_TOKEN }}
+#           tag: ${{ env.TARGET_VERSION }}
+#           name: FFMPEG Builds ${{ env.TARGET_VERSION }}
+#           body: All files are from https://www.gyan.dev/ffmpeg/
+#           files: temp/
+#           gzip: false
+      
+      - name: Create Release With Asset
+        id: Release-AIO
+        uses: Hs1r1us/Release-AIO@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token:  ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.TARGET_VERSION }}
-          name: FFMPEG Builds ${{ env.TARGET_VERSION }}
+          tag_name: ${{ env.TARGET_VERSION }}
+          asset_files: './temp/'
+          release_name: FFMPEG Builds ${{ env.TARGET_VERSION }}
           body: All files are from https://www.gyan.dev/ffmpeg/
-          files: temp/
-          gzip: false
 
