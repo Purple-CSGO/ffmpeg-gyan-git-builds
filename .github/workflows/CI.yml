@@ -1,0 +1,55 @@
+name: release CI
+
+on:
+  # Push激活
+  # push:
+
+  # 定时激活
+  schedule:
+    - cron:  '* 2 * * *'
+      # 每30分钟：'30 * * * *'
+      # 每1小时：'* 1 * * *'
+      # ！最少5分钟
+
+jobs:
+  transport:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # 获取对比版本，下载文件
+      - name: run
+        run: |
+          currentVersion = `curl $CURRENT_VERSION_API`
+          targetVersion  = `curl $TARGET_VERSION_API`
+
+          if $currentVersion != $targetVersion
+          then
+            mkdir temp
+            cd temp
+            wget $FILE_1
+            wget $FILE_2
+            echo "CURRENT_VERSION={ $currentVersion }" >> $GITHUB_ENV
+            echo "TARGET_VERSION={ $targetVersion }" >> $GITHUB_ENV
+            cd .
+          else
+            echo "RUN=0" >> $GITHUB_ENV
+          fi
+        env:
+          CURRENT_VERSION_API: https://api.upup.cool/repos/Purple-CSGO/CSGO-Config-Presets/version
+          TARGET_VERSION_API: https://www.gyan.dev/ffmpeg/builds/git-version
+          FILE_1: https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z
+          FILE_2: https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z
+
+      # 发布release和上传文件
+      - name: release
+        if: env.CURRENT_VERSION != env.TARGET_VERSION
+        uses: meeDamian/github-release@v2.0.3
+        with:
+          token:  ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.TARGET_VERSION }}
+          name: ${{ env.TARGET_VERSION }}
+          body: All files are from https://www.gyan.dev/ffmpeg/
+          files: temp/
+          gzip: no
+
