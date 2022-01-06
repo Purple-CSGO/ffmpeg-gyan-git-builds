@@ -50,4 +50,4 @@ jobs:
           tag_name: ${{ env.TARGET_VERSION }}
           name: FFMPEG Builds ${{ env.TARGET_VERSION }}
           body: All files are from https://www.gyan.dev/ffmpeg/
-          draft: true # 为发布前检查，设置true发布为草稿
+          draft: false # 方便debug，设置true发布为草稿
